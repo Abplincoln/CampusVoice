@@ -1,0 +1,11 @@
+{
+  "network": "botchainTestnet",
+  "chainId": 968,
+  "contractName": "BotDAO",
+  "contractAddress": "0x13E171aeCDcA456E8Ca0c6EFbC3bb0943dBC759B",
+  "deployer": "0x4093dAfCC3f60B5491C6Cd694f07F03fDA86919a",
+  "admin": "0x4093dAfCC3f60B5491C6Cd694f07F03fDA86919a",
+  "minVotingDuration": "60",
+  "maxVotingDuration": "604800",
+  "deployedAt": "2026-09-21T12:52:23.590Z"
+}
