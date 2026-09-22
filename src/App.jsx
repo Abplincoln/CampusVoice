@@ -634,15 +634,14 @@ function App() {
       {/* Header */}
       <header className="app-header">
         <div className="brand-group">
-          <div className="brand-logo">B</div>
+          <div className="brand-logo">CV</div>
           <div>
-            <h1 className="brand-title">BOTDAO</h1>
-            <div className="brand-tagline">Decentralized Governance on BotChain</div>
+            <h1 className="brand-title">CampusVoice</h1>
+            <div className="brand-tagline">Student decisions, transparently recorded.</div>
           </div>
         </div>
 
         <div className="header-actions">
-          {/* Network indicator pill */}
           {account && (
             <span className={`badge ${isCorrectNetwork ? 'badge-neutral' : 'badge-tied'}`}>
               <span className="badge-dot"></span>
@@ -650,7 +649,6 @@ function App() {
             </span>
           )}
 
-          {/* Wallet Action Button */}
           {!account ? (
             <button className="btn btn-primary" onClick={connectWallet} disabled={isConnecting}>
               {isConnecting ? 'Connecting...' : 'Connect Wallet'}
@@ -665,7 +663,6 @@ function App() {
             </button>
           )}
 
-          {/* Theme Switcher Button */}
           <button className="btn btn-sm" onClick={toggleTheme} aria-label="Toggle theme">
             {theme === 'light' ? 'Dark' : 'Light'}
           </button>
@@ -677,7 +674,7 @@ function App() {
         <div className="alert-banner alert-banner-warning">
           <div>
             <strong>Wrong Network:</strong> Your wallet is currently connected to Chain ID{' '}
-            {chainId ?? 'Unknown'}. BOTDAO operates on <strong>BotChain Testnet (Chain ID 968)</strong>.
+            {chainId ?? 'Unknown'}. CampusVoice operates on <strong>BotChain Testnet (Chain ID 968)</strong>.
           </div>
           <button className="btn btn-warning btn-sm" onClick={switchNetwork}>
             Switch to BotChain Testnet
@@ -708,17 +705,46 @@ function App() {
       <main>
         {/* HERO / OVERVIEW */}
         <section className="hero-card">
-          <h2 className="hero-headline">Decisions belong to the members.</h2>
-          <p className="hero-subtext">
-            Every wallet holding native BOT on BotChain testnet has an equal, direct voice in the DAO.
-            No separate governance tokens, no manual registration, and no gatekeepers.
-          </p>
+          <div>
+            <div className="section-count" style={{ marginBottom: '20px' }}>01 / PARTICIPATION</div>
+            <h2 className="hero-headline">Your campus.<br />Your voice.</h2>
+            <p className="hero-subtext">
+              CampusVoice gives students a transparent way to participate in SUG decisions,
+              vote on proposals, and see the final result recorded on BotChain.
+            </p>
+
+            <div className="vote-actions" style={{ marginTop: '28px' }}>
+              <button
+                className="btn btn-primary"
+                onClick={() => document.getElementById('active-proposals')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                View Proposals
+              </button>
+
+              <button
+                className="btn btn-sm"
+                onClick={() => setShowProposalForm(true)}
+                disabled={!account || !isCorrectNetwork || !isMember || isCreatingProposal}
+                title={
+                  !account
+                    ? 'Connect your wallet first'
+                    : !isCorrectNetwork
+                      ? 'Switch to BotChain Testnet first'
+                      : !isMember
+                        ? 'You need native BOT to create proposals'
+                        : 'Create a new proposal'
+                }
+              >
+                Create Proposal
+              </button>
+            </div>
+          </div>
 
           {/* User Identity Strip */}
           <div className="user-identity-strip">
             {!account ? (
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                Connect your browser wallet to verify membership, check BOT balance, and participate in governance.
+                Connect your wallet to check participation eligibility and take part in active student proposals.
               </div>
             ) : (
               <>
@@ -799,11 +825,14 @@ function App() {
         </section>
 
         {/* ACTIVE PROPOSALS SECTION */}
-        <section style={{ marginBottom: '36px' }}>
+        <section id="active-proposals" style={{ marginBottom: '72px' }}>
           <div className="section-header">
-            <div className="section-title">
-              Active Proposals
-              <span className="section-count">{activeProposals.length}</span>
+            <div>
+              <div className="section-count" style={{ marginBottom: '12px' }}>02 / OPEN DECISIONS</div>
+              <div className="section-title">
+                Active Proposals
+                <span className="section-count">{activeProposals.length}</span>
+              </div>
             </div>
             <button
               className="btn btn-primary btn-sm"
@@ -851,7 +880,7 @@ function App() {
                     value={proposalTitle}
                     onChange={(e) => setProposalTitle(e.target.value)}
                     maxLength={100}
-                    placeholder="e.g. Should BOTDAO organize a community workshop?"
+                    placeholder="e.g. Should SUG organize a student career fair this semester?"
                     disabled={isCreatingProposal}
                     style={{
                       width: '100%',
@@ -1043,13 +1072,15 @@ function App() {
                   <div key={proposal.id} id={`proposal-${proposal.id}`} className="proposal-card">
                     <div className="proposal-card-header">
                       <div>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600, marginRight: '8px' }}>
-                          #{proposal.id}
-                        </span>
-                        <h4 className="proposal-card-title" style={{ display: 'inline' }}>{proposal.title}</h4>
+                        <div className="section-count" style={{ marginBottom: '10px' }}>
+                          PROPOSAL {String(proposal.id).padStart(2, '0')}
+                        </div>
+                        <h4 className="proposal-card-title">{proposal.title}</h4>
                       </div>
+
                       <span className={`badge ${STATUS_CONFIG[proposal.status]?.badgeClass ?? 'badge-neutral'}`}>
-                        <span className="badge-dot"></span> {STATUS_CONFIG[proposal.status]?.label ?? 'Active'}
+                        <span className="badge-dot"></span>
+                        {STATUS_CONFIG[proposal.status]?.label ?? 'Active'}
                       </span>
                     </div>
 
@@ -1062,35 +1093,52 @@ function App() {
                     {proposal.description.length > 160 && (
                       <button
                         className="btn btn-sm"
-                        style={{ marginBottom: '16px', padding: '4px 8px', fontSize: '0.75rem' }}
+                        style={{ marginBottom: '20px', padding: '4px 8px', fontSize: '0.75rem' }}
                         onClick={() => setExpandedProposalId(isExpanded ? null : proposal.id)}
                       >
                         {isExpanded ? 'Show less' : 'Read full proposal'}
                       </button>
                     )}
 
-                    {/* Vote progress breakdown */}
                     <div className="vote-breakdown">
-                      <div className="vote-progress-bar">
-                        <div className="vote-progress-yes" style={{ width: `${totalVotes > 0 ? yesPercent : 0}%` }}></div>
-                        <div className="vote-progress-no" style={{ width: `${totalVotes > 0 ? 100 - yesPercent : 0}%` }}></div>
-                      </div>
                       <div className="vote-counts-row">
-                        <span className="vote-count-yes">YES: {proposal.yesVotes}</span>
-                        <span style={{ color: 'var(--text-secondary)' }}>{totalVotes} total votes</span>
-                        <span className="vote-count-no">NO: {proposal.noVotes}</span>
+                        <span className="vote-count-yes">YES {proposal.yesVotes}</span>
+                        <span>{totalVotes} {totalVotes === 1 ? 'vote' : 'votes'}</span>
+                        <span className="vote-count-no">NO {proposal.noVotes}</span>
+                      </div>
+
+                      <div className="vote-progress-bar">
+                        <div
+                          className="vote-progress-yes"
+                          style={{ width: `${totalVotes > 0 ? yesPercent : 0}%` }}
+                        ></div>
+                        <div
+                          className="vote-progress-no"
+                          style={{ width: `${totalVotes > 0 ? 100 - yesPercent : 0}%` }}
+                        ></div>
                       </div>
                     </div>
 
                     <div className="proposal-meta-row">
                       <div>
-                        Creator: <a className="link" href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${proposal.creator}`} target="_blank" rel="noreferrer">{truncateAddress(proposal.creator)}</a>
-                      </div>
-                      <div>
-                        Deadline: {new Date(proposal.deadline * 1000).toLocaleString()}
+                        <span>Voting closes</span>
+                        <strong>{new Date(proposal.deadline * 1000).toLocaleString()}</strong>
                       </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+                      <div>
+                        <span>Created by</span>
+                        <a
+                          className="link"
+                          href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${proposal.creator}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {truncateAddress(proposal.creator)}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '18px' }}>
                       <button
                         type="button"
                         className="btn btn-sm"
@@ -1100,11 +1148,10 @@ function App() {
                       </button>
                     </div>
 
-                    {/* Voting controls */}
                     <div className="proposal-voting">
                       {votingState[proposal.id] === true ? (
                         <div className="vote-complete">
-                          ? You have already voted on this proposal
+                          ✓ You have already voted on this proposal
                         </div>
                       ) : (
                         <>
@@ -1150,7 +1197,6 @@ function App() {
                         </>
                       )}
                     </div>
-                    </div>
                   </div>
                 );
               })}
@@ -1159,11 +1205,14 @@ function App() {
         </section>
 
         {/* PROPOSAL HISTORY SECTION */}
-        <section style={{ marginBottom: '36px' }}>
+        <section style={{ marginBottom: '72px' }}>
           <div className="section-header">
-            <div className="section-title">
-              Proposal History
-              <span className="section-count">{completedProposals.length}</span>
+            <div>
+              <div className="section-count" style={{ marginBottom: '12px' }}>03 / DECISIONS</div>
+              <div className="section-title">
+                Proposal History
+                <span className="section-count">{completedProposals.length}</span>
+              </div>
             </div>
           </div>
 
@@ -1189,13 +1238,15 @@ function App() {
                   <div key={proposal.id} id={`proposal-${proposal.id}`} className="proposal-card">
                     <div className="proposal-card-header">
                       <div>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600, marginRight: '8px' }}>
-                          #{proposal.id}
-                        </span>
-                        <h4 className="proposal-card-title" style={{ display: 'inline' }}>{proposal.title}</h4>
+                        <div className="section-count" style={{ marginBottom: '10px' }}>
+                          DECISION {String(proposal.id).padStart(2, '0')}
+                        </div>
+                        <h4 className="proposal-card-title">{proposal.title}</h4>
                       </div>
+
                       <span className={`badge ${statusMeta.badgeClass}`}>
-                        <span className="badge-dot"></span> {statusMeta.label}
+                        <span className="badge-dot"></span>
+                        {statusMeta.label}
                       </span>
                     </div>
 
@@ -1203,18 +1254,39 @@ function App() {
 
                     <div className="vote-breakdown">
                       <div className="vote-counts-row">
-                        <span className="vote-count-yes">Final YES: {proposal.yesVotes}</span>
-                        <span style={{ color: 'var(--text-secondary)' }}>Total: {totalVotes}</span>
-                        <span className="vote-count-no">Final NO: {proposal.noVotes}</span>
+                        <span className="vote-count-yes">YES {proposal.yesVotes}</span>
+                        <span>{totalVotes} {totalVotes === 1 ? 'vote' : 'votes'}</span>
+                        <span className="vote-count-no">NO {proposal.noVotes}</span>
+                      </div>
+
+                      <div className="vote-progress-bar">
+                        <div
+                          className="vote-progress-yes"
+                          style={{ width: `${totalVotes > 0 ? (proposal.yesVotes / totalVotes) * 100 : 0}%` }}
+                        ></div>
+                        <div
+                          className="vote-progress-no"
+                          style={{ width: `${totalVotes > 0 ? (proposal.noVotes / totalVotes) * 100 : 0}%` }}
+                        ></div>
                       </div>
                     </div>
 
                     <div className="proposal-meta-row">
                       <div>
-                        Creator: <a className="link" href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${proposal.creator}`} target="_blank" rel="noreferrer">{truncateAddress(proposal.creator)}</a>
+                        <span>Closed at</span>
+                        <strong>{new Date(proposal.deadline * 1000).toLocaleString()}</strong>
                       </div>
+
                       <div>
-                        Closed at: {new Date(proposal.deadline * 1000).toLocaleString()}
+                        <span>Created by</span>
+                        <a
+                          className="link"
+                          href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${proposal.creator}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {truncateAddress(proposal.creator)}
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -1226,48 +1298,81 @@ function App() {
 
         {/* CONTRACT TRANSPARENCY CARD */}
         <section className="transparency-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-            <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>BotDAO On-Chain Protocol Information</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                All governance actions and vote tallies are verified on the BotChain Testnet.
-              </p>
-            </div>
-            <button className="btn btn-sm" onClick={fetchContractData} disabled={isLoadingContract}>
-              {isLoadingContract ? 'Refreshing...' : 'â†» Refresh Data'}
-            </button>
+          <div style={{ marginBottom: '32px' }}>
+            <div className="section-count" style={{ marginBottom: '12px' }}>04 / VERIFICATION</div>
+            <h3 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.04em', marginBottom: '12px' }}>
+              Every decision leaves a record.
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '620px', margin: 0 }}>
+              CampusVoice records proposals and vote tallies on BotChain Testnet.
+              Anyone can inspect the contract and verify the activity on-chain.
+            </p>
           </div>
 
           <div className="transparency-grid">
             <div className="transparency-item">
-              <div className="transparency-label">Contract Address</div>
+              <div className="transparency-label">Contract</div>
               <div className="transparency-value">
-                <a className="link" href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${CONTRACT_ADDRESS}`} target="_blank" rel="noreferrer">
-                  {truncateAddress(CONTRACT_ADDRESS)} â†—
+                <a
+                  className="link"
+                  href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${CONTRACT_ADDRESS}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {truncateAddress(CONTRACT_ADDRESS)} ↗
                 </a>
               </div>
             </div>
 
             <div className="transparency-item">
-              <div className="transparency-label">DAO Deployer / Admin</div>
+              <div className="transparency-label">Contract Admin</div>
               <div className="transparency-value">
                 {contractData.admin ? (
-                  <a className="link" href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${contractData.admin}`} target="_blank" rel="noreferrer">
-                    {truncateAddress(contractData.admin)} â†—
+                  <a
+                    className="link"
+                    href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${contractData.admin}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {truncateAddress(contractData.admin)} ↗
                   </a>
-                ) : 'â€”'}
+                ) : '—'}
               </div>
             </div>
 
             <div className="transparency-item">
-              <div className="transparency-label">Network & Chain ID</div>
-              <div className="transparency-value">{BOTCHAIN_TESTNET.chainName} ({BOTCHAIN_TESTNET.chainId})</div>
+              <div className="transparency-label">Network</div>
+              <div className="transparency-value">{BOTCHAIN_TESTNET.chainName}</div>
             </div>
 
             <div className="transparency-item">
-              <div className="transparency-label">Live RPC Endpoint</div>
-              <div className="transparency-value" style={{ fontSize: '0.8rem' }}>{BOTCHAIN_TESTNET.rpcUrl}</div>
+              <div className="transparency-label">Chain ID</div>
+              <div className="transparency-value">{BOTCHAIN_TESTNET.chainId}</div>
             </div>
+
+            <div className="transparency-item">
+              <div className="transparency-label">RPC Endpoint</div>
+              <div className="transparency-value" style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>
+                {BOTCHAIN_TESTNET.rpcUrl}
+              </div>
+            </div>
+
+            <div className="transparency-item" style={{ display: 'flex', alignItems: 'flex-end' }}>
+              <a
+                className="btn btn-primary btn-sm"
+                href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${CONTRACT_ADDRESS}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View Contract on Explorer ↗
+              </a>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '28px', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn btn-sm" onClick={fetchContractData} disabled={isLoadingContract}>
+              {isLoadingContract ? 'Refreshing...' : 'Refresh Data'}
+            </button>
           </div>
         </section>
       </main>
