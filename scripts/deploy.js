@@ -21,7 +21,7 @@ async function main() {
 
   if (balance === 0n) {
     throw new Error(
-      `Deployer wallet ${deployer.address} has 0 BOT balance on chain ${chainId}. Fund the account with testnet BOT before deploying.`
+      `Deployer wallet ${deployer.address} has 0 BOT balance on chain ${chainId}. Fund the account with BOT before deploying.`
     );
   }
 
@@ -70,7 +70,12 @@ async function main() {
     fs.mkdirSync(deploymentsDir, { recursive: true });
   }
 
-  const deploymentFilePath = path.join(deploymentsDir, "botchain-testnet.json");
+  const filename =
+    network.name === "botchainMainnet" || chainId === 677
+      ? "botchain-mainnet.json"
+      : "botchain-testnet.json";
+
+  const deploymentFilePath = path.join(deploymentsDir, filename);
   fs.writeFileSync(deploymentFilePath, JSON.stringify(deploymentRecord, null, 2));
   console.log(`\nDeployment record saved to: ${deploymentFilePath}`);
   console.log("=== Deployment Completed Successfully ===");

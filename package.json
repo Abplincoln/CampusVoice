@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy:testnet": "hardhat run scripts/deploy.js --network botchainTestnet"
+    "deploy:testnet": "hardhat run scripts/deploy.js --network botchainTestnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network botchainMainnet"
   },
   "dependencies": {
     "ethers": "^6.13.5",
