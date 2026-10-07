@@ -27,6 +27,11 @@ module.exports = {
       url: "https://rpc.bohr.life",
       chainId: 968,
       accounts: accounts
+    },
+    botchainMainnet: {
+      url: "https://rpc.botchain.ai",
+      chainId: 677,
+      accounts: accounts
     }
   }
 };

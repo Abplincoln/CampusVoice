@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ethers } from 'ethers';
-import { BOTCHAIN_TESTNET, CONTRACT_ADDRESS } from './config';
+import { BOTCHAIN_MAINNET, CONTRACT_ADDRESS } from './config';
 import { BOTDAO_ABI } from './abi';
 
 // Proposal status mapping matching the BotDAO smart contract enum:
@@ -66,7 +66,7 @@ function App() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const isCorrectNetwork = chainId === BOTCHAIN_TESTNET.chainId;
+  const isCorrectNetwork = chainId === BOTCHAIN_MAINNET.chainId;
 
   // Load contract read-only data using public RPC provider
   const fetchContractData = useCallback(async () => {
@@ -74,7 +74,7 @@ function App() {
     setContractError(null);
 
     try {
-      const readProvider = new ethers.JsonRpcProvider(BOTCHAIN_TESTNET.rpcUrl);
+      const readProvider = new ethers.JsonRpcProvider(BOTCHAIN_MAINNET.rpcUrl);
       const contract = new ethers.Contract(CONTRACT_ADDRESS, BOTDAO_ABI, readProvider);
 
       const [adminAddress, countBN, minDurBN, maxDurBN] = await Promise.all([
@@ -111,9 +111,9 @@ function App() {
         proposals: loadedProposals,
       });
     } catch (err) {
-      console.error('Failed to read contract data from BotChain RPC:', err);
+      console.error('Failed to read contract data from BOT Chain Mainnet RPC:', err);
       setContractError(
-        'Unable to load DAO contract data from BotChain testnet RPC. Please verify your connection or click Retry.'
+        'Unable to load DAO contract data from BOT Chain Mainnet RPC. Please verify your connection or click Retry.'
       );
     } finally {
       setIsLoadingContract(false);
@@ -129,7 +129,7 @@ function App() {
     }
 
     try {
-      const readProvider = new ethers.JsonRpcProvider(BOTCHAIN_TESTNET.rpcUrl);
+      const readProvider = new ethers.JsonRpcProvider(BOTCHAIN_MAINNET.rpcUrl);
       const contract = new ethers.Contract(CONTRACT_ADDRESS, BOTDAO_ABI, readProvider);
 
       const [bal, mem] = await Promise.all([
@@ -153,7 +153,7 @@ function App() {
     }
 
     try {
-      const readProvider = new ethers.JsonRpcProvider(BOTCHAIN_TESTNET.rpcUrl);
+      const readProvider = new ethers.JsonRpcProvider(BOTCHAIN_MAINNET.rpcUrl);
       const contract = new ethers.Contract(CONTRACT_ADDRESS, BOTDAO_ABI, readProvider);
       const results = {};
 
@@ -298,7 +298,7 @@ function App() {
     }
   };
 
-  // Switch or add BotChain Testnet
+  // Switch or add BOT Chain Mainnet
   const switchNetwork = async () => {
     if (!window.ethereum) return;
 
@@ -307,7 +307,7 @@ function App() {
     try {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: BOTCHAIN_TESTNET.chainIdHex }],
+        params: [{ chainId: BOTCHAIN_MAINNET.chainIdHex }],
       });
     } catch (switchError) {
       if (switchError.code === 4902 || switchError?.data?.originalError?.code === 4902) {
@@ -316,27 +316,27 @@ function App() {
             method: 'wallet_addEthereumChain',
             params: [
               {
-                chainId: BOTCHAIN_TESTNET.chainIdHex,
-                chainName: BOTCHAIN_TESTNET.chainName,
-                rpcUrls: [BOTCHAIN_TESTNET.rpcUrl],
+                chainId: BOTCHAIN_MAINNET.chainIdHex,
+                chainName: BOTCHAIN_MAINNET.chainName,
+                rpcUrls: [BOTCHAIN_MAINNET.rpcUrl],
                 nativeCurrency: {
                   name: 'BOT',
-                  symbol: BOTCHAIN_TESTNET.currencySymbol,
-                  decimals: BOTCHAIN_TESTNET.currencyDecimals,
+                  symbol: BOTCHAIN_MAINNET.currencySymbol,
+                  decimals: BOTCHAIN_MAINNET.currencyDecimals,
                 },
-                blockExplorerUrls: [BOTCHAIN_TESTNET.explorerUrl],
+                blockExplorerUrls: [BOTCHAIN_MAINNET.explorerUrl],
               },
             ],
           });
         } catch (addError) {
-          console.error('Failed to add BotChain Testnet:', addError);
-          setWalletError(addError.message || 'Failed to add BotChain Testnet.');
+          console.error('Failed to add BOT Chain Mainnet:', addError);
+          setWalletError(addError.message || 'Failed to add BOT Chain Mainnet.');
         }
       } else if (switchError.code === 4001) {
         setWalletError('Network switch request was rejected by user.');
       } else {
         console.error('Failed to switch network:', switchError);
-        setWalletError(switchError.message || 'Failed to switch to BotChain Testnet.');
+        setWalletError(switchError.message || 'Failed to switch to BOT Chain Mainnet.');
       }
     }
   };
@@ -363,7 +363,7 @@ function App() {
     if (!isCorrectNetwork) {
       setVotingState((prev) => ({
         ...prev,
-        [proposalId]: { status: 'error', error: 'Switch to BOT Chain Testnet before voting.' }
+        [proposalId]: { status: 'error', error: 'Switch to BOT Chain Mainnet before voting.' }
       }));
       return;
     }
@@ -399,7 +399,7 @@ function App() {
 
       await fetchContractData();
 
-      const readProvider = new ethers.JsonRpcProvider(BOTCHAIN_TESTNET.rpcUrl);
+      const readProvider = new ethers.JsonRpcProvider(BOTCHAIN_MAINNET.rpcUrl);
       const readContract = new ethers.Contract(CONTRACT_ADDRESS, BOTDAO_ABI, readProvider);
       const alreadyVoted = await readContract.hasVoted(proposalId, account);
 
@@ -468,7 +468,7 @@ function App() {
     if (!isCorrectNetwork) {
       setProposalTransactionStatus({
         type: 'error',
-        message: 'Switch to BotChain Testnet before creating a proposal.',
+        message: 'Switch to BOT Chain Mainnet before creating a proposal.',
       });
       return;
     }
@@ -645,7 +645,7 @@ function App() {
           {account && (
             <span className={`badge ${isCorrectNetwork ? 'badge-neutral' : 'badge-tied'}`}>
               <span className="badge-dot"></span>
-              {isCorrectNetwork ? 'BotChain Testnet' : `Chain ID: ${chainId ?? 'Unknown'}`}
+              {isCorrectNetwork ? 'BOT Chain Mainnet' : `Chain ID: ${chainId ?? 'Unknown'}`}
             </span>
           )}
 
@@ -655,7 +655,7 @@ function App() {
             </button>
           ) : !isCorrectNetwork ? (
             <button className="btn btn-warning btn-sm" onClick={switchNetwork}>
-              Switch to BotChain
+              Switch to BOT Chain Mainnet
             </button>
           ) : (
             <button className="btn btn-sm" onClick={connectWallet} title="Click to switch account">
@@ -674,10 +674,10 @@ function App() {
         <div className="alert-banner alert-banner-warning">
           <div>
             <strong>Wrong Network:</strong> Your wallet is currently connected to Chain ID{' '}
-            {chainId ?? 'Unknown'}. CampusVoice operates on <strong>BotChain Testnet (Chain ID 968)</strong>.
+            {chainId ?? 'Unknown'}. CampusVoice operates on <strong>BOT Chain Mainnet (Chain ID 677)</strong>.
           </div>
           <button className="btn btn-warning btn-sm" onClick={switchNetwork}>
-            Switch to BotChain Testnet
+            Switch to BOT Chain Mainnet
           </button>
         </div>
       )}
@@ -729,7 +729,7 @@ function App() {
                   !account
                     ? 'Connect your wallet first'
                     : !isCorrectNetwork
-                      ? 'Switch to BotChain Testnet first'
+                      ? 'Switch to BOT Chain Mainnet first'
                       : !isMember
                         ? 'You need native BOT to create proposals'
                         : 'Create a new proposal'
@@ -845,7 +845,7 @@ function App() {
                 !account
                   ? 'Connect your wallet first'
                   : !isCorrectNetwork
-                    ? 'Switch to BotChain Testnet first'
+                    ? 'Switch to BOT Chain Mainnet first'
                     : !isMember
                       ? 'You need native BOT to create proposals'
                       : 'Create a new proposal'
@@ -1002,7 +1002,7 @@ function App() {
                       {proposalTransactionStatus.hash && (
                         <a
                           className="link"
-                          href={`${BOTCHAIN_TESTNET.explorerUrl}/tx/${proposalTransactionStatus.hash}`}
+                          href={`${BOTCHAIN_MAINNET.explorerUrl}/tx/${proposalTransactionStatus.hash}`}
                           target="_blank"
                           rel="noreferrer"
                           style={{ display: 'inline-block', marginTop: '5px' }}
@@ -1041,14 +1041,14 @@ function App() {
 
           {isLoadingContract ? (
             <div className="empty-state-card">
-              <div className="empty-state-desc">Loading proposals from BotChain Testnet...</div>
+              <div className="empty-state-desc">Loading proposals from BOT Chain Mainnet...</div>
             </div>
           ) : activeProposals.length === 0 ? (
             <div className="empty-state-card">
               <div className="empty-state-icon">ðŸ“‹</div>
               <h3 className="empty-state-title">No active proposals</h3>
               <p className="empty-state-desc">
-                There are currently no proposals open for voting on BotChain testnet. When a proposal is created, it will appear here for members to vote YES or NO.
+                There are currently no proposals open for voting on BOT Chain Mainnet. When a proposal is created, it will appear here for members to vote YES or NO.
               </p>
               <button
                 className="btn btn-primary btn-sm"
@@ -1129,7 +1129,7 @@ function App() {
                         <span>Created by</span>
                         <a
                           className="link"
-                          href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${proposal.creator}`}
+                          href={`${BOTCHAIN_MAINNET.explorerUrl}/address/${proposal.creator}`}
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -1281,7 +1281,7 @@ function App() {
                         <span>Created by</span>
                         <a
                           className="link"
-                          href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${proposal.creator}`}
+                          href={`${BOTCHAIN_MAINNET.explorerUrl}/address/${proposal.creator}`}
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -1304,7 +1304,7 @@ function App() {
               Every decision leaves a record.
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '620px', margin: 0 }}>
-              CampusVoice records proposals and vote tallies on BotChain Testnet.
+              CampusVoice records proposals and vote tallies on BOT Chain Mainnet.
               Anyone can inspect the contract and verify the activity on-chain.
             </p>
           </div>
@@ -1315,7 +1315,7 @@ function App() {
               <div className="transparency-value">
                 <a
                   className="link"
-                  href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${CONTRACT_ADDRESS}`}
+                  href={`${BOTCHAIN_MAINNET.explorerUrl}/address/${CONTRACT_ADDRESS}`}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -1330,7 +1330,7 @@ function App() {
                 {contractData.admin ? (
                   <a
                     className="link"
-                    href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${contractData.admin}`}
+                    href={`${BOTCHAIN_MAINNET.explorerUrl}/address/${contractData.admin}`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -1342,25 +1342,25 @@ function App() {
 
             <div className="transparency-item">
               <div className="transparency-label">Network</div>
-              <div className="transparency-value">{BOTCHAIN_TESTNET.chainName}</div>
+              <div className="transparency-value">{BOTCHAIN_MAINNET.chainName}</div>
             </div>
 
             <div className="transparency-item">
               <div className="transparency-label">Chain ID</div>
-              <div className="transparency-value">{BOTCHAIN_TESTNET.chainId}</div>
+              <div className="transparency-value">{BOTCHAIN_MAINNET.chainId}</div>
             </div>
 
             <div className="transparency-item">
               <div className="transparency-label">RPC Endpoint</div>
               <div className="transparency-value" style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>
-                {BOTCHAIN_TESTNET.rpcUrl}
+                {BOTCHAIN_MAINNET.rpcUrl}
               </div>
             </div>
 
             <div className="transparency-item" style={{ display: 'flex', alignItems: 'flex-end' }}>
               <a
                 className="btn btn-primary btn-sm"
-                href={`${BOTCHAIN_TESTNET.explorerUrl}/address/${CONTRACT_ADDRESS}`}
+                href={`${BOTCHAIN_MAINNET.explorerUrl}/address/${CONTRACT_ADDRESS}`}
                 target="_blank"
                 rel="noreferrer"
               >
