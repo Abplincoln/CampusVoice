@@ -710,7 +710,16 @@ function App() {
             <h2 className="hero-headline">Your campus.<br />Your voice.</h2>
             <p className="hero-subtext">
               CampusVoice gives students a transparent way to participate in SUG decisions,
-              vote on proposals, and see the final result recorded on BotChain.
+              vote on proposals, and see the final result recorded on{' '}
+              <a
+                className="link"
+                href={BOTCHAIN_MAINNET.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                BOT Chain
+              </a>
+              .
             </p>
 
             <div className="vote-actions" style={{ marginTop: '28px' }}>
@@ -1304,8 +1313,25 @@ function App() {
               Every decision leaves a record.
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '620px', margin: 0 }}>
-              CampusVoice records proposals and vote tallies on BOT Chain Mainnet.
-              Anyone can inspect the contract and verify the activity on-chain.
+              CampusVoice records proposals and vote tallies on{' '}
+              <a
+                className="link"
+                href={BOTCHAIN_MAINNET.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                BOT Chain Mainnet
+              </a>
+              . Anyone can inspect the contract and verify the activity on-chain via the{' '}
+              <a
+                className="link"
+                href={BOTCHAIN_MAINNET.explorerUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                BOT Chain Explorer
+              </a>
+              .
             </p>
           </div>
 
@@ -1342,12 +1368,49 @@ function App() {
 
             <div className="transparency-item">
               <div className="transparency-label">Network</div>
-              <div className="transparency-value">{BOTCHAIN_MAINNET.chainName}</div>
+              <div className="transparency-value">
+                <a
+                  className="link"
+                  href={BOTCHAIN_MAINNET.websiteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {BOTCHAIN_MAINNET.chainName} ↗
+                </a>
+              </div>
             </div>
 
             <div className="transparency-item">
               <div className="transparency-label">Chain ID</div>
               <div className="transparency-value">{BOTCHAIN_MAINNET.chainId}</div>
+            </div>
+
+            <div className="transparency-item">
+              <div className="transparency-label">BOT Chain Website</div>
+              <div className="transparency-value">
+                <a
+                  className="link"
+                  href={BOTCHAIN_MAINNET.websiteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  https://botchain.ai/ ↗
+                </a>
+              </div>
+            </div>
+
+            <div className="transparency-item">
+              <div className="transparency-label">BOT Chain Explorer</div>
+              <div className="transparency-value">
+                <a
+                  className="link"
+                  href={BOTCHAIN_MAINNET.explorerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  https://scan.botchain.ai/ ↗
+                </a>
+              </div>
             </div>
 
             <div className="transparency-item">
@@ -1357,7 +1420,7 @@ function App() {
               </div>
             </div>
 
-            <div className="transparency-item" style={{ display: 'flex', alignItems: 'flex-end' }}>
+            <div className="transparency-item" style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
               <a
                 className="btn btn-primary btn-sm"
                 href={`${BOTCHAIN_MAINNET.explorerUrl}/address/${CONTRACT_ADDRESS}`}
@@ -1365,6 +1428,14 @@ function App() {
                 rel="noreferrer"
               >
                 View Contract on Explorer ↗
+              </a>
+              <a
+                className="btn btn-sm"
+                href={BOTCHAIN_MAINNET.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                BOT Chain Website ↗
               </a>
             </div>
           </div>
@@ -1375,6 +1446,19 @@ function App() {
             </button>
           </div>
         </section>
+
+        {/* FOOTER */}
+        <footer style={{ marginTop: '56px', paddingTop: '24px', paddingBottom: '32px', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+          <div>CampusVoice &mdash; Student decisions, transparently recorded on BOT Chain.</div>
+          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+            <a className="link" href={BOTCHAIN_MAINNET.websiteUrl} target="_blank" rel="noreferrer">
+              BOT Chain Website ↗
+            </a>
+            <a className="link" href={BOTCHAIN_MAINNET.explorerUrl} target="_blank" rel="noreferrer">
+              BOT Chain Explorer ↗
+            </a>
+          </div>
+        </footer>
       </main>
     </div>
   );

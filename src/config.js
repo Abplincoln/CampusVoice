@@ -8,6 +8,7 @@ export const BOTCHAIN_MAINNET = {
   currencySymbol: 'BOT',
   currencyDecimals: 18,
   explorerUrl: 'https://scan.botchain.ai',
+  websiteUrl: 'https://botchain.ai/',
 };
 
 // Backwards-compatible testnet definition
