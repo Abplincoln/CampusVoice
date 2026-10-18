@@ -1,4 +1,4 @@
-﻿# CampusVoice
+# CampusVoice
 
 **Student decisions, transparently recorded.**
 
@@ -110,3 +110,8 @@ botdao/
 â”œâ”€â”€ foundry.toml
 â”œâ”€â”€ package.json
 â””â”€â”€ vite.config.js
+```
+
+## Deployment
+
+Production deployments are automatically triggered by pushes to the `main` branch.
